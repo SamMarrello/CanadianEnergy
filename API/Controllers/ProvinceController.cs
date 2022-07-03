@@ -11,18 +11,20 @@ public class ProvinceController : BaseApiController
 {
     
     [HttpGet]
-    public async Task<ActionResult<List<Province>>> GetProvinces()
+    public async Task<IActionResult> GetProvinces()
     {
-        return await Mediator.Send(new ListProvinces.Query());
+        return HandleResults(await Mediator.Send(new ListProvinces.Query()));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Province>> GetProvince(int id)
+    public async Task<ActionResult> GetProvince(int id)
     {
-        return await Mediator.Send(new DetailsProvinces.Query {Id = id});
+       var result = await Mediator.Send(new DetailsProvinces.Query {Id = id});
+
+       return HandleResults(result);
     }
 
-    [HttpPut("{}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProvince(int id, Province province)
     {
         province.Id = id;
