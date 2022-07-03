@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Application.Core;
 using API.Application.Provinces;
 using API.Persistance;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -22,13 +23,14 @@ namespace API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(Config =>
+            {
+                Config.RegisterValidatorsFromAssemblyContaining<UpdateProvinces>();
+            });
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "WebAPIv5", Version = "v1"}); });
             services.AddDbContext<Datacontext>(options =>
                 options.UseNpgsql(Config.GetConnectionString("DefaultConnection")));
             services.AddMediatR(typeof(ListProvinces.Handler).Assembly);
-            services.AddMediatR(typeof(DetailsProvinces.Handler).Assembly);
-            services.AddMediatR(typeof(UpdateProvinces.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         }
 

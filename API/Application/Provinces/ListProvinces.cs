@@ -1,4 +1,5 @@
-﻿using API.Domain;
+﻿using API.Application.Core;
+using API.Domain;
 using API.Persistance;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -7,12 +8,12 @@ namespace API.Application.Provinces;
 
 public class ListProvinces
 {
-    public class Query : IRequest<List<Province>>
+    public class Query : IRequest<Result<List<Province>>>
     {
         
     }
 
-    public class Handler : IRequestHandler<Query, List<Province>>
+    public class Handler : IRequestHandler<Query, Result<List<Province>>>
     {
         private readonly Datacontext _datacontext;
 
@@ -21,9 +22,9 @@ public class ListProvinces
             _datacontext = datacontext;
         }
         
-        public Task<List<Province>> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Result<List<Province>>> Handle(Query request, CancellationToken cancellationToken)
         {
-            return _datacontext.Provinces.ToListAsync();
+            return Result<List<Province>>.Success(await _datacontext.Provinces.ToListAsync(cancellationToken));
         }
     }
 }

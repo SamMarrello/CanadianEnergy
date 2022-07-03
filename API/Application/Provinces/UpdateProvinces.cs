@@ -1,6 +1,7 @@
 ﻿using API.Domain;
 using API.Persistance;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 
 namespace API.Application.Provinces;
@@ -10,6 +11,14 @@ public class UpdateProvinces
     public class Command : IRequest
     {
         public Province Province { get; set; }
+    }
+
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.Province).SetValidator(new ProvinceValidator());
+        }
     }
 
     public class Handler : IRequestHandler<Command>
