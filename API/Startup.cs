@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Application.Core;
 using API.Application.PriceHistories;
 using API.Application.Provinces;
+using API.Middleware;
 using API.Persistance;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
@@ -38,9 +39,10 @@ namespace API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<ExceptionMiddleware>();
+            
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
             }

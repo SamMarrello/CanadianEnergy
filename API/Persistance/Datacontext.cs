@@ -1,10 +1,11 @@
 ﻿using API.Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Persistance;
 
 
-public class Datacontext : DbContext
+public class Datacontext : IdentityDbContext<User>
 {
     public Datacontext(DbContextOptions<Datacontext> options) : base(options)
     {
