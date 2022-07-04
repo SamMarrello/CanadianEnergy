@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Application.Core;
+using API.Application.PriceHistories;
 using API.Application.Provinces;
 using API.Persistance;
 using FluentValidation.AspNetCore;
@@ -31,6 +32,7 @@ namespace API
             services.AddDbContext<Datacontext>(options =>
                 options.UseNpgsql(Config.GetConnectionString("DefaultConnection")));
             services.AddMediatR(typeof(ListProvinces.Handler).Assembly);
+            services.AddMediatR(typeof(CreateHistory.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         }
 

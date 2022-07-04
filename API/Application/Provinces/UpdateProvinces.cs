@@ -1,4 +1,5 @@
-﻿using API.Domain;
+﻿using API.Application.Core;
+using API.Domain;
 using API.Persistance;
 using AutoMapper;
 using FluentValidation;
@@ -8,7 +9,7 @@ namespace API.Application.Provinces;
 
 public class UpdateProvinces
 {
-    public class Command : IRequest
+    public class Command : IRequest<Result<Unit>>
     {
         public Province Province { get; set; }
     }
@@ -21,7 +22,7 @@ public class UpdateProvinces
         }
     }
 
-    public class Handler : IRequestHandler<Command>
+    public class Handler : IRequestHandler<Command, Result<Unit>>
     {
         private readonly Datacontext _datacontext;
         private readonly IMapper _mapper;
@@ -32,15 +33,25 @@ public class UpdateProvinces
             _mapper = mapper;
         }
 
-        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             var province = await _datacontext.Provinces.FindAsync(request.Province.Id);
 
+            if (province == null)
+            {
+                return null;
+            }
+            
             _mapper.Map(request.Province, province);
             
-            await _datacontext.SaveChangesAsync();
+            var result = await _datacontext.SaveChangesAsync() > 0;
+
+            if (!result)
+            {
+                return Result<Unit>.Fail("Failed to update activity");
+            }
             
-            return Unit.Value;
+            return Result<Unit>.Success(Unit.Value);
         }
     }
 }

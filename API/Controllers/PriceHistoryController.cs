@@ -16,8 +16,8 @@ public class PriceHistoryController : BaseApiController
 
     [HttpDelete("{id}")]
 
-    public async Task<IActionResult> DeletePriceHistory(int Id, PriceHistory priceHistory)
+    public async Task<IActionResult> DeletePriceHistory(int id)
     {
-        
+        return HandleResults(await Mediator.Send(new DeleteHistory.Command {Id = id}));
     }
 }
